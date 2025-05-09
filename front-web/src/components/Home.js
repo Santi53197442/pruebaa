@@ -1,15 +1,15 @@
 import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';  // Cambié useHistory por useNavigate
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import './Home.css';  // Asegúrate de que este archivo exista
+import './Home.css';
 
 const Home = () => {
     const { currentUser, logout } = useContext(AuthContext);
-    const navigate = useNavigate();  // Usando useNavigate en vez de useHistory
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         logout();
-        navigate('/login');  // Reemplazo de history.push por navigate
+        navigate('/login');
     };
 
     return (
@@ -26,6 +26,23 @@ const Home = () => {
                 <p>Has iniciado sesión exitosamente en el sistema de ómnibus.</p>
                 <div className="dashboard">
                     <p>Aquí se mostrará el contenido principal de la aplicación.</p>
+
+                    {/* Mostrar opciones para Administrador */}
+                    {currentUser?.rol === 'Administrador' && (
+                        <div>
+                            <Link to="/createUser">Crear Usuario</Link><br />
+                            <Link to="/deleteUser">Eliminar Usuario</Link><br />
+                        </div>
+                    )}
+
+                    {/* Mostrar opciones para Vendedor */}
+                    {currentUser?.rol === 'Vendedor' && (
+                        <div>
+                            <Link to="/altaOmnibus">Alta Ómnibus</Link><br />
+                            <Link to="/altaLocalidad">Alta Localidad</Link><br />
+                            <Link to="/listaOmnibus">Ver Ómnibus</Link><br />
+                        </div>
+                    )}
                 </div>
             </main>
         </div>

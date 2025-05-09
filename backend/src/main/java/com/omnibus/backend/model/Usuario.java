@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)  // Definir la estrategia de herencia
 @Table(name = "usuarios")
 public class Usuario {
     @Id
@@ -31,12 +32,16 @@ public class Usuario {
     @Column(nullable = false)
     private LocalDate fechaNac;
 
+    @Column(nullable = false)
+    private String rol;  // Rol del usuario (Administrador, Vendedor, Cliente)
+
     // Constructores
     public Usuario() {
+        this.rol = "Cliente";  // Asignamos Cliente como rol predeterminado
     }
 
     public Usuario(String nombre, String apellido, Integer ci, String contrasenia,
-                   String email, Integer telefono, LocalDate fechaNac) {
+                   String email, Integer telefono, LocalDate fechaNac, String rol) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.ci = ci;
@@ -44,6 +49,7 @@ public class Usuario {
         this.email = email;
         this.telefono = telefono;
         this.fechaNac = fechaNac;
+        this.rol = rol != null ? rol : "Cliente"; // Asegura que el rol predeterminado sea Cliente
     }
 
     // Getters y Setters
@@ -109,5 +115,13 @@ public class Usuario {
 
     public void setFechaNac(LocalDate fechaNac) {
         this.fechaNac = fechaNac;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 }

@@ -5,6 +5,8 @@ import com.omnibus.backend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UsuarioService {
@@ -38,10 +40,28 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
+        // Verificar la contraseña
         if (!passwordEncoder.matches(contrasenia, usuario.getContrasenia())) {
             throw new RuntimeException("Contraseña incorrecta");
         }
 
         return usuario;
     }
+
+    // Eliminar usuario
+    public void eliminarUsuario(Usuario usuario) {
+        usuarioRepository.delete(usuario);
+    }
+    public Optional<Usuario> buscarPorEmail(String email) {
+        // Suponiendo que tienes un repositorio que devuelve Optional
+        return usuarioRepository.findByEmail(email);
+    }
+    public Optional<Usuario> obtenerPorId(Long id) {
+        return usuarioRepository.findById(id);
+    }
+    public List<Usuario> obtenerTodosUsuarios() {
+        return usuarioRepository.findAll();  // Asegúrate de que el repositorio esté configurado correctamente
+    }
+
+
 }

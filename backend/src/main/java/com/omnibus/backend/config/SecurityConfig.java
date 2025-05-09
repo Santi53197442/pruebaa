@@ -2,6 +2,7 @@ package com.omnibus.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,11 +21,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> {}) // Habilitar CORS
-                .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF (si lo necesitas)
+                .cors(cors -> {}) // Habilita CORS
+                .csrf(csrf -> csrf.disable()) // Desactiva CSRF (útil para APIs REST)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/auth/**").permitAll() // Permitir acceso sin autenticación
-                        .anyRequest().authenticated() // Requiere autenticación para otras rutas
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/localidades/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/omnibus/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/localidades").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/omnibus").permitAll()
+                        .anyRequest().authenticated()
                 );
 
         return http.build();
@@ -38,13 +43,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Permitir solicitudes desde tu frontend
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Permitir estos headers
-        configuration.setAllowCredentials(true); // Permitir cookies
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Aplicar CORS a todas las rutas
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
