@@ -89,9 +89,19 @@
 
 	<build>
 		<plugins>
+			<!-- Plugin para Spring Boot -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- Configurar encoding UTF-8 para recursos -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.1</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
