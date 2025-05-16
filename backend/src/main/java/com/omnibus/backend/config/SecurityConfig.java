@@ -46,7 +46,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",                  // Frontend local
-                "https://tu-frontend.vercel.app"         // Cambiar por tu URL real en Vercel
+                "https://pruebaa-git-main-santi53197442s-projects.vercel.app"         // Cambiar por tu URL real en Vercel
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
