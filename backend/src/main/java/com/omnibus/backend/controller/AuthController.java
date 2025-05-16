@@ -9,7 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -131,22 +136,83 @@ public class AuthController {
 
     @DeleteMapping("/eliminar")
     public ResponseEntity<?> eliminarUsuario(@RequestParam Long usuarioId, @RequestParam Long adminId) {
-        // Verificar que el usuario es un administrador
+        // Verificar que el usuario que hace la solicitud es un administrador
         Optional<Usuario> adminOpt = usuarioService.obtenerPorId(adminId);
         if (adminOpt.isEmpty() || !"Administrador".equals(adminOpt.get().getRol())) {
             return ResponseEntity.status(403)
                     .body("Acceso denegado: solo los administradores pueden eliminar usuarios.");
         }
 
+        // Evitar que el admin se elimine a sí mismo
+        if (usuarioId.equals(adminId)) {
+            return ResponseEntity.status(400).body("No puedes eliminarte a ti mismo.");
+        }
+
         // Buscar al usuario por su ID
         Optional<Usuario> usuarioOpt = usuarioService.obtenerPorId(usuarioId);
         if (usuarioOpt.isPresent()) {
-            // Eliminar usuario
             usuarioService.eliminarUsuario(usuarioOpt.get());
             return ResponseEntity.ok("Usuario eliminado correctamente.");
         }
 
         return ResponseEntity.status(404).body("Usuario no encontrado.");
+    }
+    @PostMapping("/crear-masivo")
+    public ResponseEntity<?> crearUsuariosDesdeCSV(@RequestParam("archivo") MultipartFile archivo,
+                                                   @RequestParam("adminId") Long adminId) {
+        Optional<Usuario> adminOpt = usuarioService.obtenerPorId(adminId);
+        if (adminOpt.isEmpty() || !"Administrador".equals(adminOpt.get().getRol())) {
+            return ResponseEntity.status(403).body("Acceso denegado: solo los administradores pueden subir archivos.");
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(archivo.getInputStream()))) {
+            String linea;
+            List<Usuario> usuariosCreados = new ArrayList<>();
+
+            // Saltar encabezado
+            reader.readLine();
+
+            while ((linea = reader.readLine()) != null) {
+                String[] datos = linea.split(",");
+
+                if (datos.length < 8) continue;
+
+                Usuario nuevoUsuario;
+                String rol = datos[7].trim();
+
+                switch (rol) {
+                    case "Administrador":
+                        nuevoUsuario = new Administrador();
+                        break;
+                    case "Vendedor":
+                        nuevoUsuario = new Vendedor();
+                        break;
+                    case "Cliente": // Agregar este caso
+                        nuevoUsuario = new Cliente();
+                        break;
+                    default:
+                        continue;
+                }
+
+                nuevoUsuario.setNombre(datos[0].trim());
+                nuevoUsuario.setApellido(datos[1].trim());
+                nuevoUsuario.setCi(Integer.parseInt(datos[2].trim()));
+                nuevoUsuario.setContrasenia(datos[3].trim());
+                nuevoUsuario.setEmail(datos[4].trim());
+                nuevoUsuario.setTelefono(Integer.parseInt(datos[5].trim()));
+                nuevoUsuario.setFechaNac(LocalDate.parse(datos[6].trim()));
+
+                usuarioService.registrarUsuario(nuevoUsuario);
+                usuariosCreados.add(nuevoUsuario);
+            }
+
+            return ResponseEntity.ok("Usuarios cargados correctamente: " + usuariosCreados.size());
+
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error al leer el archivo CSV: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Error al procesar el archivo: " + e.getMessage());
+        }
     }
 
 }

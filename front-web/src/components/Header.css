@@ -1,0 +1,63 @@
+/* src/components/Header.css */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #007bff;
+    color: white;
+    padding: 0.7rem 2rem;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    width: 45px;
+    height: 45px;
+    margin-right: 0.8rem;
+}
+
+.header-left h1 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.header-right {
+    position: relative;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.user-menu {
+    position: relative;
+    padding: 0.5rem;
+}
+
+.dropdown {
+    position: absolute;
+    right: 0;
+    top: 2.5rem;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+}
+
+.dropdown button {
+    display: block;
+    padding: 0.7rem 1rem;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    color: #007bff;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.dropdown button:hover {
+    background-color: #f0f0f0;
+}

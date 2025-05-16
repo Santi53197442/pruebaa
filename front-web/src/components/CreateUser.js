@@ -2,13 +2,12 @@ import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './CreateUser.css'; // Importamos los estilos
+import './CreateUser.css';
 
 const CreateUser = () => {
-    const { currentUser } = useContext(AuthContext); // Obtener el usuario actual (debe ser administrador)
+    const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    // Estado para los datos del formulario
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -17,10 +16,12 @@ const CreateUser = () => {
         email: '',
         telefono: '',
         fechaNac: '',
-        rol: 'Cliente', // Rol predeterminado
+        rol: 'Cliente',
     });
 
-    // Manejo del cambio en los campos del formulario
+    const [csvFile, setCsvFile] = useState(null);
+    const [modoCarga, setModoCarga] = useState('individual'); // 'individual' o 'csv'
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -29,25 +30,42 @@ const CreateUser = () => {
         });
     };
 
-    // Enviar el formulario
+    const handleCSVChange = (e) => {
+        setCsvFile(e.target.files[0]);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (currentUser?.rol !== 'Administrador') {
             alert('No tienes permisos para realizar esta acción');
-            navigate('/home'); // Redirige a la página principal si no es admin
+            navigate('/home');
             return;
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/crear', formData, {
-                params: { adminId: currentUser.id } // Enviar el ID del administrador que está creando el usuario
-            });
-            alert('Usuario creado exitosamente');
-            navigate('/home'); // Redirige a la página principal después de crear el usuario
+            if (modoCarga === 'individual') {
+                await axios.post('http://localhost:8080/api/auth/crear', formData, {
+                    params: { adminId: currentUser.id },
+                });
+                alert('Usuario creado exitosamente');
+            } else if (modoCarga === 'csv') {
+                if (!csvFile) return alert('Selecciona un archivo CSV');
+
+                const formDataCSV = new FormData();
+                formDataCSV.append('archivo', csvFile); // clave que espera el backend
+
+                await axios.post('http://localhost:8080/api/auth/crear-masivo', formDataCSV, {
+                    params: { adminId: currentUser.id },
+                });
+
+                alert('Usuarios cargados exitosamente desde CSV');
+            }
+
+            navigate('/home');
         } catch (error) {
             console.error(error);
-            alert('Hubo un error al crear el usuario');
+            alert('Error al crear usuario(s)');
         }
     };
 
@@ -57,91 +75,142 @@ const CreateUser = () => {
 
     return (
         <div className="create-user-container">
-            <h2>Crear Nuevo Usuario</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Nombre</label>
-                    <input
-                        type="text"
-                        name="nombre"
-                        value={formData.nombre}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Apellido</label>
-                    <input
-                        type="text"
-                        name="apellido"
-                        value={formData.apellido}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Cédula de Identidad</label>
-                    <input
-                        type="number"
-                        name="ci"
-                        value={formData.ci}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Contraseña</label>
-                    <input
-                        type="password"
-                        name="contrasenia"
-                        value={formData.contrasenia}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Email</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Teléfono</label>
-                    <input
-                        type="number"
-                        name="telefono"
-                        value={formData.telefono}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Fecha de Nacimiento</label>
-                    <input
-                        type="date"
-                        name="fechaNac"
-                        value={formData.fechaNac}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Rol</label>
-                    <select name="rol" value={formData.rol} onChange={handleChange}>
-                        <option value="Cliente">Cliente</option>
-                        <option value="Vendedor">Vendedor</option>
-                        <option value="Administrador">Administrador</option>
-                    </select>
-                </div>
-                <button type="submit">Crear Usuario</button>
-            </form>
+            <h2 className="title">Crear Usuario</h2>
 
-            {/* Botón para volver atrás */}
-            <button className="back-button" onClick={() => navigate('/home')}>Volver a la página principal</button>
+            <div className="switch-mode">
+                <button
+                    className={modoCarga === 'individual' ? 'active' : ''}
+                    onClick={() => setModoCarga('individual')}
+                >
+                    Carga Individual
+                </button>
+                <button
+                    className={modoCarga === 'csv' ? 'active' : ''}
+                    onClick={() => setModoCarga('csv')}
+                >
+                    Carga Masiva (CSV)
+                </button>
+            </div>
+
+            <div className="form-container">
+                {modoCarga === 'individual' && (
+                    <form onSubmit={handleSubmit}>
+                        <div className="input-group">
+                            <label>Nombre</label>
+                            <input
+                                type="text"
+                                name="nombre"
+                                value={formData.nombre}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label>Apellido</label>
+                            <input
+                                type="text"
+                                name="apellido"
+                                value={formData.apellido}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label>Cédula</label>
+                            <input
+                                type="number"
+                                name="ci"
+                                value={formData.ci}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label>Contraseña</label>
+                            <input
+                                type="password"
+                                name="contrasenia"
+                                value={formData.contrasenia}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label>Email</label>
+                            <input
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label>Teléfono</label>
+                            <input
+                                type="number"
+                                name="telefono"
+                                value={formData.telefono}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label>Fecha Nac.</label>
+                            <input
+                                type="date"
+                                name="fechaNac"
+                                value={formData.fechaNac}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label>Rol</label>
+                            <select
+                                name="rol"
+                                value={formData.rol}
+                                onChange={handleChange}
+                            >
+                                <option value="Cliente">Cliente</option>
+                                <option value="Vendedor">Vendedor</option>
+                                <option value="Administrador">Administrador</option>
+                            </select>
+                        </div>
+                        <div className="button-container">
+                            <button type="submit" className="submit-btn">
+                                Crear Usuario
+                            </button>
+                            <button type="button" className="back-btn" onClick={() => navigate('/home')}>
+                                Volver
+                            </button>
+                        </div>
+                    </form>
+                )}
+
+                {modoCarga === 'csv' && (
+                    <form onSubmit={handleSubmit}>
+                        <div className="csv-upload">
+                            <label>Archivo CSV</label>
+                            <input
+                                type="file"
+                                accept=".csv"
+                                onChange={handleCSVChange}
+                                required
+                            />
+                            <p>Formato: nombre,apellido,ci,contrasenia,email,telefono,fechaNac,rol</p>
+                        </div>
+                        <div className="button-container">
+                            <button type="submit" className="submit-btn">
+                                Cargar CSV
+                            </button>
+                            <button type="button" className="back-btn" onClick={() => navigate('/home')}>
+                                Volver
+                            </button>
+                        </div>
+                    </form>
+                )}
+            </div>
         </div>
     );
 };

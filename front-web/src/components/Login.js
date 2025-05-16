@@ -2,6 +2,8 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';  // Cambié useHistory por useNavigate
 import { AuthContext } from '../context/AuthContext';
 import { loginUser } from '../api';
+import logo from '../assets/images/logo.png';  // Importa la imagen desde src/assets/images
+
 // import './Login.css'; // Descomenté esta línea si la necesitas
 
 const Login = () => {
@@ -33,6 +35,9 @@ const Login = () => {
         <div className="login-container">
             <div className="login-form-container">
                 <h2>Iniciar Sesión</h2>
+                <div className="image-container">
+                    <img src={logo} alt="Imagen de inicio de sesión" />
+                </div>
                 {error && <div className="error-message">{error}</div>}
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
@@ -61,6 +66,7 @@ const Login = () => {
                     ¿No tienes una cuenta? <Link to="/registro">Regístrate aquí</Link>
                 </p>
             </div>
+
         </div>
     );
 };

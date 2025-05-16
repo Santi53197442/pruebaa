@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/omnibus/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/localidades").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/omnibus").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/viajes/crear").permitAll()
                         .anyRequest().authenticated()
                 );
 

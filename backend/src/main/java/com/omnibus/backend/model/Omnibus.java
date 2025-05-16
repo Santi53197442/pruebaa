@@ -1,7 +1,8 @@
 package com.omnibus.backend.model;
 
 import jakarta.persistence.*;
-
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity
 @Table(name = "omnibus")
@@ -17,6 +18,8 @@ public class Omnibus {
     @Column(name = "modelo", nullable = false)
     private String modelo;
 
+    @Min(1)
+    @Max(60)
     @Column(name = "cantidad_asientos", nullable = false)
     private Integer cantidadAsientos;
 
@@ -28,7 +31,6 @@ public class Omnibus {
     @JoinColumn(name = "localidad_id", nullable = false)
     private Localidad localidadActual;
 
-    // Enumeración para el estado del ómnibus
     public enum EstadoOmnibus {
         ACTIVO, INACTIVO
     }
@@ -41,7 +43,7 @@ public class Omnibus {
                    EstadoOmnibus estado, Localidad localidadActual) {
         this.matricula = matricula;
         this.modelo = modelo;
-        this.cantidadAsientos = cantidadAsientos;
+        setCantidadAsientos(cantidadAsientos);
         this.estado = estado;
         this.localidadActual = localidadActual;
     }
@@ -76,6 +78,9 @@ public class Omnibus {
     }
 
     public void setCantidadAsientos(Integer cantidadAsientos) {
+        if (cantidadAsientos < 1 || cantidadAsientos > 60) {
+            throw new IllegalArgumentException("La cantidad de asientos debe estar entre 1 y 60.");
+        }
         this.cantidadAsientos = cantidadAsientos;
     }
 

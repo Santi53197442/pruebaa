@@ -8,8 +8,11 @@ import CreateUser from './components/CreateUser';
 import DeleteUser from './components/DeleteUser';
 import AltaOmnibus from './components/AltaOmnibus';
 import AltaLocalidad from './components/AltaLocalidad';
-import ListaOmnibus from './components/ListaOmnibus'; // ✅ ¡Esta línea es la que faltaba!
+import ListaOmnibus from './components/ListaOmnibus';
+import ListarUsuarios from './components/ListaUsuarios';
+import CrearViaje from './components/CrearViaje';
 import PrivateRoute from './components/PrivateRoute';
+
 import './App.css';
 
 function App() {
@@ -22,7 +25,7 @@ function App() {
                         <Route path="/login" element={<Login />} />
                         <Route path="/registro" element={<Registro />} />
 
-                        {/* Rutas privadas */}
+                        {/* Ruta común para todos los roles */}
                         <Route
                             path="/home"
                             element={
@@ -32,7 +35,7 @@ function App() {
                             }
                         />
 
-                        {/* Rutas para Administrador */}
+                        {/* Rutas exclusivas para el Administrador */}
                         <Route
                             path="/createUser"
                             element={
@@ -49,8 +52,16 @@ function App() {
                                 </PrivateRoute>
                             }
                         />
+                        <Route
+                            path="/listarUsuarios"
+                            element={
+                                <PrivateRoute requiredRole="Administrador">
+                                    <ListarUsuarios />
+                                </PrivateRoute>
+                            }
+                        />
 
-                        {/* Rutas para Vendedor */}
+                        {/* Rutas exclusivas para el Vendedor */}
                         <Route
                             path="/altaOmnibus"
                             element={
@@ -75,8 +86,16 @@ function App() {
                                 </PrivateRoute>
                             }
                         />
+                        <Route
+                            path="/crearViaje"
+                            element={
+                                <PrivateRoute requiredRole="Vendedor">
+                                    <CrearViaje />
+                                </PrivateRoute>
+                            }
+                        />
 
-                        {/* Ruta por defecto */}
+                        {/* Redirección por defecto */}
                         <Route path="*" element={<Navigate to="/login" />} />
                     </Routes>
                 </div>

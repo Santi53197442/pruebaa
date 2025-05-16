@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';  // Cambié useHistory por useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import { registrarUsuario } from '../api';
 import './Registro.css';
 
@@ -17,7 +17,7 @@ const Registro = () => {
 
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();  // Usando useNavigate en lugar de useHistory
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({
@@ -30,14 +30,12 @@ const Registro = () => {
         e.preventDefault();
         setError('');
 
-        // Validar contraseñas
         if (formData.contrasenia !== formData.confirmarContrasenia) {
             return setError('Las contraseñas no coinciden');
         }
 
         setLoading(true);
 
-        // Preparar datos para enviar
         const userData = {
             nombre: formData.nombre,
             apellido: formData.apellido,
@@ -51,7 +49,7 @@ const Registro = () => {
         try {
             await registrarUsuario(userData);
             alert('Usuario registrado con éxito');
-            navigate('/login');  // Usando navigate en lugar de history.push
+            navigate('/login');
         } catch (error) {
             setError(error.message);
         } finally {
@@ -65,50 +63,48 @@ const Registro = () => {
                 <h2>Registro de Usuario</h2>
                 {error && <div className="error-message">{error}</div>}
                 <form onSubmit={handleSubmit}>
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label>Nombre</label>
-                            <input
-                                type="text"
-                                name="nombre"
-                                value={formData.nombre}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Apellido</label>
-                            <input
-                                type="text"
-                                name="apellido"
-                                value={formData.apellido}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
+                    <div className="form-group">
+                        <label>Nombre</label>
+                        <input
+                            type="text"
+                            name="nombre"
+                            value={formData.nombre}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label>CI</label>
-                            <input
-                                type="number"
-                                name="ci"
-                                value={formData.ci}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Teléfono</label>
-                            <input
-                                type="number"
-                                name="telefono"
-                                value={formData.telefono}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
+                    <div className="form-group">
+                        <label>Apellido</label>
+                        <input
+                            type="text"
+                            name="apellido"
+                            value={formData.apellido}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>CI</label>
+                        <input
+                            type="number"
+                            name="ci"
+                            value={formData.ci}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Teléfono</label>
+                        <input
+                            type="number"
+                            name="telefono"
+                            value={formData.telefono}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
 
                     <div className="form-group">
@@ -122,27 +118,26 @@ const Registro = () => {
                         />
                     </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label>Contraseña</label>
-                            <input
-                                type="password"
-                                name="contrasenia"
-                                value={formData.contrasenia}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Confirmar Contraseña</label>
-                            <input
-                                type="password"
-                                name="confirmarContrasenia"
-                                value={formData.confirmarContrasenia}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
+                    <div className="form-group">
+                        <label>Contraseña</label>
+                        <input
+                            type="password"
+                            name="contrasenia"
+                            value={formData.contrasenia}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Confirmar Contraseña</label>
+                        <input
+                            type="password"
+                            name="confirmarContrasenia"
+                            value={formData.confirmarContrasenia}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
 
                     <div className="form-group">

@@ -1,61 +1,70 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+//import './EliminarUsuario.css';
 
 const DeleteUser = () => {
-    const [currentUser, setCurrentUser] = useState(null); // Estado para el usuario actual
-    const [email, setEmail] = useState('');
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
+    const [usuarios, setUsuarios] = useState([]);
+    const { currentUser } = useContext(AuthContext);
+    const navigate = useNavigate();
 
-    // Cargar el usuario actual desde la API
-    useEffect(() => {
-        axios.get('/api/current-user') // Asume que tienes un endpoint que devuelve el usuario actual
-            .then((response) => {
-                setCurrentUser(response.data);
-            })
-            .catch((err) => {
-                setError('Error al obtener el usuario: ' + (err.response?.data || err.message));
-            });
-    }, []);
-
-    if (currentUser === null) {
-        return <div>Loading...</div>; // Mientras se carga el usuario
-    }
-
-    const handleDeleteUser = async () => {
-        if (!email) {
-            setError("Por favor ingresa un email.");
-            return;
-        }
-
+    const fetchUsuarios = async () => {
         try {
-            const response = await axios.delete('/api/auth/eliminar', {
-                params: {
-                    email: email,
-                    adminId: currentUser.id
-                }
-            });
-            setMessage(response.data);
-            setError('');
-        } catch (err) {
-            setError("Error al eliminar el usuario: " + (err.response?.data || err.message));
-            setMessage('');
+            const response = await axios.get(`http://localhost:8080/api/auth/usuarios?adminId=${currentUser.id}`);
+            setUsuarios(response.data);
+        } catch (error) {
+            console.error('Error al obtener usuarios:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUsuarios();
+    }, [currentUser]);
+
+    const handleEliminar = async (usuarioId) => {
+        if (window.confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
+            try {
+                await axios.delete(`http://localhost:8080/api/auth/eliminar?usuarioId=${usuarioId}&adminId=${currentUser.id}`);
+                alert("Usuario eliminado correctamente");
+                fetchUsuarios(); // Volver a cargar la lista actualizada
+            } catch (error) {
+                alert("Error al eliminar el usuario");
+                console.error(error);
+            }
         }
     };
 
     return (
-        <div>
-            <h2>Eliminar Usuario</h2>
-            <input
-                type="email"
-                placeholder="Correo del usuario"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <button onClick={handleDeleteUser}>Eliminar Usuario</button>
-
-            {message && <p>{message}</p>}
-            {error && <p>{error}</p>}
+        <div className="eliminar-usuarios-container">
+            <h2>Eliminar Usuarios</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Email</th>
+                    <th>CI</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {usuarios.map((user) => (
+                    <tr key={user.id}>
+                        <td>{user.nombre}</td>
+                        <td>{user.apellido}</td>
+                        <td>{user.email}</td>
+                        <td>{user.ci}</td>
+                        <td>{user.rol}</td>
+                        <td>
+                            <button onClick={() => handleEliminar(user.id)}>Eliminar</button>
+                        </td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+            <button onClick={() => navigate('/home')}>Volver</button>
         </div>
     );
 };

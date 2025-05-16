@@ -1,78 +1,136 @@
-.home-container {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f7f9fc;
-    min-height: 100vh;
-    padding: 20px;
-}
-
-header {
+/* Estilos para el encabezado */
+.home-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Logo a la izquierda y menú a la derecha */
     align-items: center;
-    background-color: #004080;
-    color: white;
-    padding: 15px 25px;
-    border-radius: 8px;
+    background-color: #007bff; /* Color de fondo azul */
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #ccc;
+    width: 100%;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 24px;
-}
-
-.user-info {
+/* Contenedor para el logo */
+.logo-titulo {
     display: flex;
+    justify-content: flex-start; /* Alinea el logo a la izquierda */
     align-items: center;
-    gap: 15px;
+    gap: 1rem;
+    text-align: left;
 }
 
-.user-info span {
-    font-weight: 500;
+/* Ajustamos el tamaño del logo */
+.logo {
+    width: 70px; /* Tamaño del logo */
+    height: auto;
 }
 
-.user-info button {
-    padding: 8px 14px;
+/* Estilo para el menú desplegable */
+.menu-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Estilo del botón del menú */
+.menu-button {
+    background: none;
     border: none;
-    background-color: #ff4d4f;
-    color: white;
-    border-radius: 5px;
+    font-size: 1rem;
+    color: #ffffff; /* Color blanco para el texto del menú */
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+}
+
+/* Opciones del menú desplegable */
+.menu-options {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 180px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.menu-dropdown:hover .menu-options {
+    display: block;
+}
+
+/* Estilo de los links dentro del menú */
+.menu-options a {
+    color: #007bff; /* Color azul oscuro */
+    padding: 0.4rem 0;
+    display: block;
+    text-decoration: none;
+}
+
+.menu-options a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilo para el dropdown del usuario */
+.user-dropdown {
+    position: relative;
     cursor: pointer;
     font-weight: bold;
-    transition: background-color 0.3s;
+    color: #ffffff; /* Color blanco para el nombre del usuario */
+    margin-left: 1rem; /* Un poco de separación */
+    margin-right: 2rem; /* Ajustar margen derecho para centrar el menú */
 }
 
-.user-info button:hover {
-    background-color: #e04344;
+/* Estilo del dropdown del usuario */
+.dropdown {
+    position: absolute;
+    top: 30px; /* Añadí un pequeño margen para que no esté pegado al texto */
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    margin-top: 0.3rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 2;
 }
 
+/* Estilo de los botones del dropdown */
+.dropdown button {
+    background: none;
+    border: none;
+    color: #007bff; /* Cambié el color de los botones a azul */
+    padding: 0.4rem 0;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown button:hover {
+    background-color: #f1f1f1;
+}
+
+/* Ajuste para la parte principal */
 main {
-    margin-top: 30px;
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
-main h2 {
-    margin-top: 0;
-    color: #333;
-}
-
+/* Contenedor principal del Dashboard */
 .dashboard {
-    margin-top: 20px;
+    margin-top: 2rem;
+    text-align: center;
 }
 
+/* Alinea los enlaces del menú en el centro */
 .dashboard a {
     display: inline-block;
-    margin: 10px 0;
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
+    margin: 0.5rem 0;
+    color: #007bff; /* Color azul para los enlaces */
+    font-size: 1.2rem;
     text-decoration: none;
-    border-radius: 6px;
-    transition: background-color 0.3s;
 }
 
 .dashboard a:hover {
-    background-color: #0069d9;
+    text-decoration: underline;
 }
