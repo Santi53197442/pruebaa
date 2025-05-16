@@ -42,16 +42,16 @@ public class AuthController {
     public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario) {
         try {
             // Crear un Cliente a partir del objeto recibido
-            Administrador administrador = new Administrador();
-            administrador.setNombre(usuario.getNombre());
-            administrador.setApellido(usuario.getApellido());
-            administrador.setCi(usuario.getCi());
-            administrador.setContrasenia(usuario.getContrasenia());
-            administrador.setEmail(usuario.getEmail());
-            administrador.setTelefono(usuario.getTelefono());
-            administrador.setFechaNac(usuario.getFechaNac());
+            Cliente cliente = new Cliente();
+            cliente.setNombre(usuario.getNombre());
+            cliente.setApellido(usuario.getApellido());
+            cliente.setCi(usuario.getCi());
+            cliente.setContrasenia(usuario.getContrasenia());
+            cliente.setEmail(usuario.getEmail());
+            cliente.setTelefono(usuario.getTelefono());
+            cliente.setFechaNac(usuario.getFechaNac());
 
-            Usuario nuevoUsuario = usuarioService.registrarUsuario(administrador);
+            Usuario nuevoUsuario = usuarioService.registrarUsuario(cliente);
             return ResponseEntity.ok(nuevoUsuario);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
