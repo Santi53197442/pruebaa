@@ -45,8 +45,7 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("https://*.vercel.app");
-        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOriginPattern("*");  // Permite todos los orígenes
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 
@@ -54,4 +53,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
+
+
 }
