@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000") // Para React frontend
+@CrossOrigin(origins = "https://pruebaa-xa44-git-main-santi53197442s-projects.vercel.app/login") // Para React frontend
 public class AuthController {
 
     @Autowired
