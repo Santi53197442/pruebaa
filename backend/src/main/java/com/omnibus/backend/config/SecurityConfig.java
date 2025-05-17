@@ -2,14 +2,17 @@ package com.omnibus.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
-import java.util.List;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -18,39 +21,37 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> {}) // Deja que usemos el filtro que configuramos
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/localidades/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/omnibus/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/localidades").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/omnibus").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/viajes/crear").permitAll()
                         .anyRequest().authenticated()
                 );
+
         return http.build();
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-
-        // 🔓 Habilitá el dominio de Vercel (el tuyo real)
-        config.setAllowedOrigins(List.of(
-                "https://pruebaa-8k2xiplej-santi53197442s-projects.vercel.app",
-                "https://pruebaa-git-main-santi53197442s-projects.vercel.app"
-        ));
-
-        // Métodos permitidos
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // Headers permitidos
-        config.setAllowedHeaders(List.of("*"));
-
-        // Permitir credenciales (cookies, headers de auth, etc.)
         config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("https://*.vercel.app");
+        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-
-        System.out.println("✅ CORS configurado correctamente");
-
-        return source;
+        return new CorsFilter(source);
     }
 }
