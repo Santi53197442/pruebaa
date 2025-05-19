@@ -9,6 +9,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.http.HttpMethod;
+
 
 import java.util.List;
 
@@ -18,13 +20,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 👈 Aplica tu configuración
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permitir OPTIONS para preflight
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 );
-
         return http.build();
     }
 
@@ -32,15 +34,16 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-                "https://pruebaa-xa44-git-main-santi53197442s-projects.vercel.app", // tu frontend en Vercel
-                "http://localhost:3000" // para desarrollo local
+                "http://localhost:3000",
+                "https://pruebaa-xa44-git-main-santi53197442s-projects.vercel.app"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true); // importante si usas cookies o tokens en headers
+        configuration.setAllowCredentials(true);  // Si usas cookies o headers de autenticación
+        configuration.setMaxAge(3600L); // Opcional, para cachear preflight
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Aplica a todos los endpoints
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
     @Bean
@@ -48,3 +51,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
+
+
+
