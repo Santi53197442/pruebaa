@@ -17,11 +17,11 @@ const CrearViaje = () => {
     const [mensaje, setMensaje] = useState("");
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/localidades")
+        axios.get("http://localhost:8081/api/localidades")
             .then(res => setLocalidades(res.data))
             .catch(err => console.error("Error cargando localidades:", err));
 
-        axios.get("http://localhost:8080/api/omnibus")
+        axios.get("http://localhost:8081/api/omnibus")
             .then(res => setOmnibuses(res.data))
             .catch(err => console.error("Error cargando ómnibuses:", err));
     }, []);
@@ -33,7 +33,7 @@ const CrearViaje = () => {
     const handleSubmit = async e => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:8080/api/viajes/crear", formulario);
+            await axios.post("http://localhost:8081/api/viajes/crear", formulario);
             setMensaje("✅ Viaje creado con éxito.");
         } catch (error) {
             setMensaje(error.response?.data || "❌ Error al crear el viaje.");

@@ -34,12 +34,7 @@
 		</dependency>
 
 		<!-- DevTools -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
+
 		<!-- Si ya tienes estas dependencias, no las agregues de nuevo -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -59,6 +54,7 @@
 			<version>0.12.6</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>

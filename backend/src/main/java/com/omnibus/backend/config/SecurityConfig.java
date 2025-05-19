@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .cors(cors -> {}) // Habilitar CORS
                 .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF (si lo necesitas)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/auth/**").permitAll() // Permitir acceso sin autenticación
+                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated() // Requiere autenticación para otras rutas
                 );
 

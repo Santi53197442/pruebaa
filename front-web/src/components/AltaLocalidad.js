@@ -19,7 +19,7 @@ const AltaLocalidad = () => {
         setMensaje('');
         setError('');
         try {
-            const response = await axios.post('http://localhost:8080/api/localidades', formData);
+            const response = await axios.post('http://localhost:8081/api/localidades', formData);
             setMensaje('✅ Localidad creada correctamente.');
             setFormData({ nombre: '', departamento: '' });
         } catch (error) {

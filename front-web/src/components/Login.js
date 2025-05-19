@@ -1,10 +1,8 @@
 import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';  // Cambié useHistory por useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { loginUser } from '../api';
- // Importa la imagen desde src/assets/images
-
-// import './Login.css'; // Descomenté esta línea si la necesitas
+import logo from '../assets/images/logo.png';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -13,7 +11,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
 
     const { login } = useContext(AuthContext);
-    const navigate = useNavigate();  // Usando useNavigate en lugar de useHistory
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,7 +21,7 @@ const Login = () => {
         try {
             const userData = await loginUser(email, contrasenia);
             login(userData);
-            navigate('/home');  // Usando navigate en lugar de history.push
+            navigate('/home');
         } catch (error) {
             setError(error.message);
         } finally {
@@ -35,6 +33,9 @@ const Login = () => {
         <div className="login-container">
             <div className="login-form-container">
                 <h2>Iniciar Sesión</h2>
+
+                <img src={logo} alt="Logo" style={{ width: '150px', margin: '20px auto', display: 'block' }} />
+
                 {error && <div className="error-message">{error}</div>}
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
@@ -63,7 +64,6 @@ const Login = () => {
                     ¿No tienes una cuenta? <Link to="/registro">Regístrate aquí</Link>
                 </p>
             </div>
-
         </div>
     );
 };

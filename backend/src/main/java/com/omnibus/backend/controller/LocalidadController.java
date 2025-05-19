@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/localidades")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LocalidadController {
 
     private final LocalidadService localidadService;
