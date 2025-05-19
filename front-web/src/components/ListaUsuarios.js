@@ -12,7 +12,7 @@ const ListarUsuarios = () => {
     useEffect(() => {
         const fetchUsuarios = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/auth/usuarios?adminId=${currentUser.id}`);
+                const response = await axios.get(`http://localhost:8081/api/auth/usuarios?adminId=${currentUser.id}`);
                 setUsuarios(response.data);
             } catch (error) {
                 console.error('Error al obtener usuarios:', error);

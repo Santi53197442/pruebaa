@@ -26,7 +26,7 @@ const CreateUser = () => {
     const baseURL =
         process.env.NODE_ENV === 'production'
             ? 'https://pruebaa-production.up.railway.app/api/auth'
-            : 'http://localhost:8080/api/auth';
+            : 'http://localhost:8081/api/auth';
 
     const handleChange = (e) => {
         const { name, value } = e.target;

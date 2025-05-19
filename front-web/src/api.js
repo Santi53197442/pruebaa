@@ -1,4 +1,4 @@
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = 'http://localhost:8081/api';
 
 export const loginUser = async (email, contrasenia) => {
     try {

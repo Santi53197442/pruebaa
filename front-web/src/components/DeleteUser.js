@@ -11,7 +11,7 @@ const DeleteUser = () => {
 
     const fetchUsuarios = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/auth/usuarios?adminId=${currentUser.id}`);
+            const response = await axios.get(`http://localhost:8081/api/auth/usuarios?adminId=${currentUser.id}`);
             setUsuarios(response.data);
         } catch (error) {
             console.error('Error al obtener usuarios:', error);
@@ -25,7 +25,7 @@ const DeleteUser = () => {
     const handleEliminar = async (usuarioId) => {
         if (window.confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
             try {
-                await axios.delete(`http://localhost:8080/api/auth/eliminar?usuarioId=${usuarioId}&adminId=${currentUser.id}`);
+                await axios.delete(`http://localhost:8081/api/auth/eliminar?usuarioId=${usuarioId}&adminId=${currentUser.id}`);
                 alert("Usuario eliminado correctamente");
                 fetchUsuarios(); // Volver a cargar la lista actualizada
             } catch (error) {
