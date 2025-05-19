@@ -1,7 +1,0 @@
-[build]
-builder = "NIXPACKS"
-
-[deploy]
-startCommand = "java -Xms512m -Xmx768m -jar target/*.jar"
-healthcheckPath = "/actuator/health"
-healthcheckTimeout = 100
