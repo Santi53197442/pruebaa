@@ -3,5 +3,5 @@ builder = "NIXPACKS"
 
 [deploy]
 startCommand = "java -Xms512m -Xmx768m -jar target/*.jar"
-restartPolicyType = "on-failure"
-restartPolicyMaxRetries = 10
+healthcheckPath = "/actuator/health"
+healthcheckTimeout = 100
